@@ -16,7 +16,7 @@ import java.util.List;
 public class ClienteController {
 
     @Autowired
-    @Qualifier(value = "clienteDao")
+    @Qualifier(value = "clientImpl")
     private ClienteService serviceClient;
 
     @PostMapping(value = "/createClient")

@@ -1,14 +1,16 @@
 package com.clients.admin.models.entity;
 
+import javax.persistence.Column;
 import java.io.Serializable;
-import java.util.Date;
 
 public class Cliente implements Serializable {
 
     private Integer id;
+    @Column(nullable = false)
     private String nombre;
     private String apellidoPaterno;
     private String apellidoMaterno;
+    @Column(nullable = false, unique = true)
     private String email;
     private String createAt;
     private String status;
