@@ -1,5 +1,6 @@
 package com.clients.admin.implement;
 
+import com.clients.admin.Util.ValidateData;
 import com.clients.admin.dao.ClienteDao;
 import com.clients.admin.models.entity.Cliente;
 import com.clients.admin.service.ClienteService;
@@ -17,8 +18,11 @@ public class ClienteImplement implements ClienteService {
     @Autowired
     private ClienteDao clienteDao;
 
+    private ValidateData validateData = new ValidateData();
+
     @Override
     public ResponseEntity createCliente(Cliente cliente) {
+        validateData.validateObject(cliente);
         return clienteDao.createCliente(cliente);
     }
 
@@ -34,6 +38,7 @@ public class ClienteImplement implements ClienteService {
 
     @Override
     public ResponseEntity updateClient(Cliente cliente) {
+        validateData.validateObject(cliente);
         return clienteDao.updateClient(cliente);
     }
 

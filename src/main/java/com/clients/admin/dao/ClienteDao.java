@@ -52,6 +52,8 @@ public class ClienteDao implements ClienteService {
             String email = (String) spq.getOutputParameterValue("C_EMAIL");
             String date = (String) spq.getOutputParameterValue("C_DATE");
             return new ResponseEntity(new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, date), HttpStatus.CREATED);
+        } else if(code == 2){
+            throw new ApiException(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name(), new ArrayList<>(Arrays.asList(msg)));
         } else {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, msg, new ArrayList<>(Arrays.asList("Pongase en contacto con el administrador", "Ocurrio un error interno")));
         }
@@ -61,6 +63,7 @@ public class ClienteDao implements ClienteService {
     @Override
     public ResponseEntity findClienteById(int id) {
         Cliente cliente = null;
+        Map<String, Object> map = new HashMap<>();
         StoredProcedureQuery spq = getStore("SP_FIND_CLIENT");
 
         spq.registerStoredProcedureParameter("C_ID", Integer.class, ParameterMode.INOUT);
@@ -88,7 +91,11 @@ public class ClienteDao implements ClienteService {
             cliente = new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, fecha, status);
             return new ResponseEntity(cliente, HttpStatus.OK);
         } else {
-            throw new ApiException(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.name(), new ArrayList(Arrays.asList(Arrays.asList(msg))));
+            map.put("CODE", code);
+            map.put("SP_PROCEDURE", "SP_FIND_CLIENT");
+            map.put("Clase: ", ".findClienteById");
+            map.put("Message", msg);
+            throw new ApiException(HttpStatus.NOT_FOUND, msg, new ArrayList(Arrays.asList(map)));
         }
     }
 

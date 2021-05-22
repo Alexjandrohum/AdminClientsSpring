@@ -1,16 +1,23 @@
 package com.clients.admin.models.entity;
 
-import javax.persistence.Column;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class Cliente implements Serializable {
 
     private Integer id;
-    @Column(nullable = false)
+    @NotNull( message = "no puede ser nulo")
+    @NotEmpty(message = "no puede ser vacio")
     private String nombre;
+    @NotNull( message = "no puede ser nulo")
+    @NotEmpty(message = "no puede ser vacio")
     private String apellidoPaterno;
     private String apellidoMaterno;
-    @Column(nullable = false, unique = true)
+    @NotNull(message = "no puede ser nulo")
+    @Email(message = "formato incorrecto")
+    @NotEmpty(message = "no puede ser vacio")
     private String email;
     private String createAt;
     private String status;
