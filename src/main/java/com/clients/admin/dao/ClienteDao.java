@@ -7,6 +7,7 @@ import com.clients.admin.service.ClienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
@@ -15,12 +16,11 @@ import javax.persistence.StoredProcedureQuery;
 import java.util.*;
 
 @Repository
-public class ClienteDao implements ClienteService {
+public class ClienteDao {
 
     @PersistenceContext
     EntityManager entityManager;
 
-    @Override
     public ResponseEntity createCliente(Cliente cliente) {
 
         StoredProcedureQuery spq = getStore("SP_CREATE_CLIENT");
@@ -51,16 +51,18 @@ public class ClienteDao implements ClienteService {
             String apellidoMaterno = (String) spq.getOutputParameterValue("C_APELLIDOM");
             String email = (String) spq.getOutputParameterValue("C_EMAIL");
             String date = (String) spq.getOutputParameterValue("C_DATE");
-            return new ResponseEntity(new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, date), HttpStatus.CREATED);
+            return new ResponseEntity(new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, date, null), HttpStatus.CREATED);
+        } else if(code == 2){
+            throw new ApiException(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.name(), new ArrayList<>(Arrays.asList(msg)));
         } else {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, msg, new ArrayList<>(Arrays.asList("Pongase en contacto con el administrador", "Ocurrio un error interno")));
         }
 
     }
 
-    @Override
     public ResponseEntity findClienteById(int id) {
         Cliente cliente = null;
+        Map<String, Object> map = new HashMap<>();
         StoredProcedureQuery spq = getStore("SP_FIND_CLIENT");
 
         spq.registerStoredProcedureParameter("C_ID", Integer.class, ParameterMode.INOUT);
@@ -88,11 +90,14 @@ public class ClienteDao implements ClienteService {
             cliente = new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, fecha, status);
             return new ResponseEntity(cliente, HttpStatus.OK);
         } else {
-            throw new ApiException(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.name(), new ArrayList(Arrays.asList(Arrays.asList(msg))));
+            map.put("CODE", code);
+            map.put("SP_PROCEDURE", "SP_FIND_CLIENT");
+            map.put("Clase: ", ".findClienteById");
+            map.put("Message", msg);
+            throw new ApiException(HttpStatus.NOT_FOUND, msg, new ArrayList(Arrays.asList(map)));
         }
     }
 
-    @Override
     public ResponseEntity<List<Object>> listClient() {
         StoredProcedureQuery spq = getStore("SP_LIST_CLIENT");
         spq.registerStoredProcedureParameter("cursor_cliente", Void.class, ParameterMode.REF_CURSOR);
@@ -107,13 +112,13 @@ public class ClienteDao implements ClienteService {
                     objectCliente[3].toString(),
                     (Optional.ofNullable(objectCliente[4]).isPresent() ? objectCliente[4].toString() : ""),
                     objectCliente[5].toString(),
-                    objectCliente[6].toString()
+                    objectCliente[6].toString(),
+                    (Optional.ofNullable(objectCliente[7]).isPresent() ? objectCliente[7].toString() : "")
             ));
         }
         return new ResponseEntity(listCliente, HttpStatus.OK);
     }
 
-    @Override
     public ResponseEntity updateClient(Cliente cliente) {
 
         StoredProcedureQuery spq = getStore("SP_UPDATE_CLIENT");
@@ -153,7 +158,6 @@ public class ClienteDao implements ClienteService {
         }
     }
 
-    @Override
     public ResponseEntity deleteCleint(int id) {
         StoredProcedureQuery spq = getStore("SP_DELETE_CLIENT");
 
@@ -170,6 +174,27 @@ public class ClienteDao implements ClienteService {
         } else {
             throw new ApiException(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.name(), new ArrayList(Arrays.asList(Arrays.asList(msg))));
         }
+    }
+
+    public ResponseEntity uploadFile(Integer id, String foto) {
+        //SP_UPLOAD_FOTO_CLIENT
+        StoredProcedureQuery spq = getStore("SP_UPLOAD_FOTO_CLIENT");
+
+        spq.registerStoredProcedureParameter("C_ID", Integer.class, ParameterMode.IN);
+        spq.registerStoredProcedureParameter("C_FOTO", String.class, ParameterMode.IN);
+        spq.registerStoredProcedureParameter("CODE", Integer.class, ParameterMode.OUT);
+        spq.registerStoredProcedureParameter("MSG", String.class, ParameterMode.OUT);
+        spq.setParameter("C_ID", id);
+        spq.setParameter("C_FOTO", foto);
+        spq.execute();
+
+        Integer code = (Integer) spq.getOutputParameterValue("CODE");
+        String msg = (String) spq.getOutputParameterValue("MSG");
+
+        if(code != 0){
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno", new ArrayList(Arrays.asList(msg)));
+        }
+        return new ResponseEntity(new MessageGeneric(HttpStatus.ACCEPTED.value(), HttpStatus.ACCEPTED.name(), new ArrayList(Arrays.asList(msg))), HttpStatus.ACCEPTED);
     }
 
     private StoredProcedureQuery getStore(String procedure) {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,4 +44,10 @@ public class ClienteController {
     public ResponseEntity deleteClient(@PathVariable int id) {
         return serviceClient.deleteCleint(id);
     }
+
+    @PostMapping("/clientes/upload")
+    public ResponseEntity upload(@RequestParam("file") MultipartFile archivo, @RequestParam("id") Integer id) {
+        return serviceClient.uploadFile(archivo, id);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.clients.admin.service;
 
 import com.clients.admin.models.entity.Cliente;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface ClienteService {
     ResponseEntity updateClient(Cliente cliente);
 
     ResponseEntity deleteCleint(int id);
+
+    ResponseEntity uploadFile(MultipartFile foto, Integer id);
 
 }
