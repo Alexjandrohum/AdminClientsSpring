@@ -3,12 +3,9 @@ package com.clients.admin.dao;
 import com.clients.admin.exception.ApiException;
 import com.clients.admin.exception.MessageGeneric;
 import com.clients.admin.models.entity.Cliente;
-import com.clients.admin.service.ClienteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
@@ -21,7 +18,7 @@ public class ClienteDao {
     @PersistenceContext
     EntityManager entityManager;
 
-    public ResponseEntity createCliente(Cliente cliente) {
+    public ResponseEntity<Object> createCliente(Cliente cliente) {
 
         StoredProcedureQuery spq = getStore("SP_CREATE_CLIENT");
         spq.registerStoredProcedureParameter("C_ID", Integer.class, ParameterMode.OUT);
@@ -72,6 +69,7 @@ public class ClienteDao {
         spq.registerStoredProcedureParameter("C_EMAIL", String.class, ParameterMode.OUT);
         spq.registerStoredProcedureParameter("C_DATE", String.class, ParameterMode.OUT);
         spq.registerStoredProcedureParameter("C_STATUS", String.class, ParameterMode.OUT);
+        spq.registerStoredProcedureParameter("C_FOTO", String.class, ParameterMode.OUT);
         spq.registerStoredProcedureParameter("CODE", Integer.class, ParameterMode.OUT);
         spq.registerStoredProcedureParameter("MSG", String.class, ParameterMode.OUT);
         spq.setParameter("C_ID", id);
@@ -87,7 +85,8 @@ public class ClienteDao {
             String email = (String) spq.getOutputParameterValue("C_EMAIL");
             String fecha = (String) spq.getOutputParameterValue("C_DATE");
             String status = (String) spq.getOutputParameterValue("C_STATUS");
-            cliente = new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, fecha, status);
+            String foto = (String) spq.getOutputParameterValue("C_FOTO");
+            cliente = new Cliente(idCliente, nombre, apellidoPaterno, apellidoMaterno, email, fecha, status, foto);
             return new ResponseEntity(cliente, HttpStatus.OK);
         } else {
             map.put("CODE", code);
@@ -177,7 +176,6 @@ public class ClienteDao {
     }
 
     public ResponseEntity uploadFile(Integer id, String foto) {
-        //SP_UPLOAD_FOTO_CLIENT
         StoredProcedureQuery spq = getStore("SP_UPLOAD_FOTO_CLIENT");
 
         spq.registerStoredProcedureParameter("C_ID", Integer.class, ParameterMode.IN);
@@ -194,7 +192,7 @@ public class ClienteDao {
         if(code != 0){
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno", new ArrayList(Arrays.asList(msg)));
         }
-        return new ResponseEntity(new MessageGeneric(HttpStatus.ACCEPTED.value(), HttpStatus.ACCEPTED.name(), new ArrayList(Arrays.asList(msg))), HttpStatus.ACCEPTED);
+        return new ResponseEntity(new MessageGeneric(HttpStatus.ACCEPTED.value(), HttpStatus.ACCEPTED.name(), new ArrayList(Arrays.asList(msg, foto))), HttpStatus.ACCEPTED);
     }
 
     private StoredProcedureQuery getStore(String procedure) {

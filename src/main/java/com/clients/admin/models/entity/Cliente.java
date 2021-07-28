@@ -1,10 +1,19 @@
 package com.clients.admin.models.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
+@Table(name = "cliente")
 public class Cliente implements Serializable {
 
     private Integer id;
@@ -22,6 +31,10 @@ public class Cliente implements Serializable {
     private String createAt;
     private String status;
     private String foto;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "region_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Region region;
 
     public Cliente() {
     }
@@ -54,8 +67,46 @@ public class Cliente implements Serializable {
         this.status = status;
         this.foto = foto;
     }
+    
+    
 
-    public Integer getId() {
+	public Cliente(Integer id,
+			@NotNull(message = "no puede ser nulo") @NotEmpty(message = "no puede ser vacio") String nombre,
+			@NotNull(message = "no puede ser nulo") @NotEmpty(message = "no puede ser vacio") String apellidoPaterno,
+			String apellidoMaterno,
+			@NotNull(message = "no puede ser nulo") @Email(message = "formato incorrecto") @NotEmpty(message = "no puede ser vacio") String email,
+			String createAt, String status, String foto, Region region) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.apellidoPaterno = apellidoPaterno;
+		this.apellidoMaterno = apellidoMaterno;
+		this.email = email;
+		this.createAt = createAt;
+		this.status = status;
+		this.foto = foto;
+		this.region = region;
+	}
+	
+	
+
+	public Cliente(@NotNull(message = "no puede ser nulo") @NotEmpty(message = "no puede ser vacio") String nombre,
+			@NotNull(message = "no puede ser nulo") @NotEmpty(message = "no puede ser vacio") String apellidoPaterno,
+			String apellidoMaterno,
+			@NotNull(message = "no puede ser nulo") @Email(message = "formato incorrecto") @NotEmpty(message = "no puede ser vacio") String email,
+			String createAt, String status, String foto, Region region) {
+		super();
+		this.nombre = nombre;
+		this.apellidoPaterno = apellidoPaterno;
+		this.apellidoMaterno = apellidoMaterno;
+		this.email = email;
+		this.createAt = createAt;
+		this.status = status;
+		this.foto = foto;
+		this.region = region;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -119,7 +170,15 @@ public class Cliente implements Serializable {
         this.foto = foto;
     }
 
-    @Override
+    public Region getRegion() {
+		return region;
+	}
+
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+
+	@Override
     public String toString() {
         return "Cliente{" +
                 "id=" + id +

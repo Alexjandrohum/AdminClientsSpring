@@ -46,8 +46,13 @@ public class ClienteController {
     }
 
     @PostMapping("/clientes/upload")
-    public ResponseEntity upload(@RequestParam("file") MultipartFile archivo, @RequestParam("id") Integer id) {
-        return serviceClient.uploadFile(archivo, id);
+    public ResponseEntity upload(@RequestParam("file") MultipartFile archivo, @RequestParam("id") String id) {
+        return serviceClient.uploadFile(archivo, Integer.parseInt(id));
+    }
+
+    @GetMapping("/clientes/uploads/img/{nombreFoto:.+}")
+    public ResponseEntity verFoto(@PathVariable String nombreFoto) {
+        return serviceClient.verFoto(nombreFoto);
     }
 
 }
