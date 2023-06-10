@@ -1,7 +1,9 @@
 package com.clients.admin.models.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -13,28 +15,43 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 
+@Entity
 @Table(name = "cliente")
 public class Cliente implements Serializable {
-
+	
+	@Id
+	@Column(name = "id_cliente")
     private Integer id;
+	
     @NotNull(message = "no puede ser nulo")
     @NotEmpty(message = "no puede ser vacio")
     private String nombre;
+    
+    @Column(name = "apellido_paterno")
     @NotNull(message = "no puede ser nulo")
     @NotEmpty(message = "no puede ser vacio")
     private String apellidoPaterno;
+    
+    @Column(name = "apellido_materno")
     private String apellidoMaterno;
+    
     @NotNull(message = "no puede ser nulo")
     @Email(message = "formato incorrecto")
     @NotEmpty(message = "no puede ser vacio")
     private String email;
+    
+    @Column(name = "date_at")
     private String createAt;
+    
+    @Column(name = "activo")
     private String status;
+    
     private String foto;
-    @ManyToOne(fetch=FetchType.LAZY)
+    
+    /*@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "region_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Region region;
+    private Region region;*/
 
     public Cliente() {
     }
@@ -85,7 +102,7 @@ public class Cliente implements Serializable {
 		this.createAt = createAt;
 		this.status = status;
 		this.foto = foto;
-		this.region = region;
+		//this.region = region;
 	}
 	
 	
@@ -103,7 +120,7 @@ public class Cliente implements Serializable {
 		this.createAt = createAt;
 		this.status = status;
 		this.foto = foto;
-		this.region = region;
+		//this.region = region;
 	}
 
 	public Integer getId() {
@@ -170,13 +187,13 @@ public class Cliente implements Serializable {
         this.foto = foto;
     }
 
-    public Region getRegion() {
+    /*public Region getRegion() {
 		return region;
 	}
 
 	public void setRegion(Region region) {
 		this.region = region;
-	}
+	}*/
 
 	@Override
     public String toString() {

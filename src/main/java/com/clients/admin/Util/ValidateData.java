@@ -23,7 +23,7 @@ public class ValidateData<T> {
     public static void consumeViolations(Set<? extends ConstraintViolation<?>> violations) {
         StringBuffer sb = new StringBuffer();
         for(ConstraintViolation<?> violation : violations) {
-            sb.append("El parametro "+"'"+violation.getPropertyPath().toString() + "'");
+            sb.append("El parametro "+"'"+violation.getPropertyPath().toString() + "' ");
             sb.append(violation.getMessage());
             sb.append(", ");
         }

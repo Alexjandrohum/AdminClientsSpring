@@ -3,6 +3,7 @@ package com.clients.admin.implement;
 import com.clients.admin.Util.Constant;
 import com.clients.admin.Util.ValidateData;
 import com.clients.admin.dao.ClienteDao;
+import com.clients.admin.dao.ClienteJpaDao;
 import com.clients.admin.exception.ApiException;
 import com.clients.admin.models.entity.Cliente;
 import com.clients.admin.service.ClienteService;
@@ -10,10 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -30,6 +34,9 @@ public class ClienteImplement implements ClienteService {
 
     @Autowired
     private ClienteDao clienteDao;
+    
+    @Autowired
+    private ClienteJpaDao clienteJpa;
 
     private final ValidateData validateData = new ValidateData();
 
@@ -115,4 +122,14 @@ public class ClienteImplement implements ClienteService {
         cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"");
         return new ResponseEntity(recurso, cabecera, HttpStatus.OK);
     }
+
+	@Override
+	@Transactional(readOnly = true)
+	public ResponseEntity findClientByPage(Pageable pageable) {
+		Page<Cliente> listPage = clienteJpa.findAll(pageable);
+		if(listPage != null && !listPage.isEmpty()) {
+			return new ResponseEntity(listPage, HttpStatus.OK);
+		}
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
+	}
 }

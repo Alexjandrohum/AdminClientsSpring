@@ -5,6 +5,7 @@ import com.clients.admin.models.entity.Cliente;
 import com.clients.admin.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +54,11 @@ public class ClienteController {
     @GetMapping("/clientes/uploads/img/{nombreFoto:.+}")
     public ResponseEntity verFoto(@PathVariable String nombreFoto) {
         return serviceClient.verFoto(nombreFoto);
+    }
+    
+    @GetMapping("/clientes/list/page/{page}")
+    public ResponseEntity listaByPage(@PathVariable int page) {
+    	return serviceClient.findClientByPage(PageRequest.of(page, 3));
     }
 
 }
