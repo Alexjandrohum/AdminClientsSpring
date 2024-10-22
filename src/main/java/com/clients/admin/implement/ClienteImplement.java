@@ -34,34 +34,34 @@ public class ClienteImplement implements ClienteService {
     private final ValidateData validateData = new ValidateData();
 
     @Override
-    public ResponseEntity createCliente(Cliente cliente) {
+    public ResponseEntity<?> createCliente(Cliente cliente) {
         validateData.validateObject(cliente);
         return clienteDao.createCliente(cliente);
     }
 
     @Override
-    public ResponseEntity findClienteById(int id) {
+    public ResponseEntity<?> findClienteById(int id) {
         return clienteDao.findClienteById(id);
     }
 
     @Override
-    public ResponseEntity<List<Object>> listClient() {
+    public ResponseEntity<?> listClient() {
         return clienteDao.listClient();
     }
 
     @Override
-    public ResponseEntity updateClient(Cliente cliente) {
+    public ResponseEntity<?> updateClient(Cliente cliente) {
         validateData.validateObject(cliente);
         return clienteDao.updateClient(cliente);
     }
 
     @Override
-    public ResponseEntity deleteCleint(int id) {
+    public ResponseEntity<?> deleteCleint(int id) {
         return clienteDao.deleteCleint(id);
     }
 
     @Override
-    public ResponseEntity uploadFile(MultipartFile foto, Integer id) {
+    public ResponseEntity<?> uploadFile(MultipartFile foto, Integer id) {
         String nombreArchivo = "";
 
         Cliente clienteObtenido = (Cliente) clienteDao.findClienteById(id).getBody();
@@ -91,7 +91,7 @@ public class ClienteImplement implements ClienteService {
         return clienteDao.uploadFile(id, nombreArchivo);
     }
 
-    public ResponseEntity verFoto(String nombreFoto) {
+    public ResponseEntity<?> verFoto(String nombreFoto) {
         Path rutaArchivo = Paths.get(Constant.pathFile).resolve(nombreFoto).toAbsolutePath();
 
         Resource recurso = null;
