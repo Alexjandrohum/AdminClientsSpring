@@ -22,37 +22,37 @@ public class ClienteController {
     private ClienteService serviceClient;
 
     @PostMapping(value = "/createClient")
-    public ResponseEntity createCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> createCliente(@RequestBody Cliente cliente) {
         return serviceClient.createCliente(cliente);
     }
 
     @GetMapping(value = "/findClient/{id}")
-    public ResponseEntity findClienteById(@PathVariable int id) {
+    public ResponseEntity<?> findClienteById(@PathVariable int id) {
         return serviceClient.findClienteById(id);
     }
 
     @GetMapping(value = "/listClient")
-    public ResponseEntity<List<Object>> listClient() {
+    public ResponseEntity<?> listClient() {
         return serviceClient.listClient();
     }
 
     @PutMapping(value = "/updateClient")
-    public ResponseEntity updateClient(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> updateClient(@RequestBody Cliente cliente) {
         return serviceClient.updateClient(cliente);
     }
 
     @DeleteMapping(value = "/deleteClient/{id}")
-    public ResponseEntity deleteClient(@PathVariable int id) {
+    public ResponseEntity<?> deleteClient(@PathVariable int id) {
         return serviceClient.deleteCleint(id);
     }
 
     @PostMapping("/clientes/upload")
-    public ResponseEntity upload(@RequestParam("file") MultipartFile archivo, @RequestParam("id") String id) {
+    public ResponseEntity<?> upload(@RequestParam("file") MultipartFile archivo, @RequestParam("id") String id) {
         return serviceClient.uploadFile(archivo, Integer.parseInt(id));
     }
 
     @GetMapping("/clientes/uploads/img/{nombreFoto:.+}")
-    public ResponseEntity verFoto(@PathVariable String nombreFoto) {
+    public ResponseEntity<?> verFoto(@PathVariable String nombreFoto) {
         return serviceClient.verFoto(nombreFoto);
     }
     
