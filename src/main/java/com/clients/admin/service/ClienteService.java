@@ -16,7 +16,7 @@ public interface ClienteService {
 
     ResponseEntity<?> updateClient(Cliente cliente);
 
-    ResponseEntity<?> deleteCleint(int id);
+    ResponseEntity<?> deleteClient(int id);
 
     ResponseEntity<?> uploadFile(MultipartFile foto, Integer id);
     

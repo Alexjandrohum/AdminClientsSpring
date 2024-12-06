@@ -63,7 +63,7 @@ public class ClienteImplement implements ClienteService {
     }
 
     @Override
-    public ResponseEntity<?> deleteCleint(int id) {
+    public ResponseEntity<?> deleteClient(int id) {
         return clienteDao.deleteCleint(id);
     }
 

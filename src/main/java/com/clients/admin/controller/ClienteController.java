@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@CrossOrigin(origins = {"http://localhost:8080", "*"})
+@CrossOrigin(origins = {"http://localhost:8091", "*"})
 @RestController
 @RequestMapping(value = Constant.VERSION)
 public class ClienteController {
@@ -57,8 +57,8 @@ public class ClienteController {
     }
     
     @GetMapping("/clientes/list/page/{page}")
-    public ResponseEntity listaByPage(@PathVariable int page) {
-    	return serviceClient.findClientByPage(PageRequest.of(page, 3));
+    public ResponseEntity<?> listaByPage(@PathVariable int page) {
+    	return serviceClient.findClientByPage(PageRequest.of(page, 10));
     }
 
 }
